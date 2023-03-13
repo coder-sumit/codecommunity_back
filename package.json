@@ -1,0 +1,25 @@
+{
+  "name": "codecommunity_back",
+  "version": "1.0.0",
+  "description": "back end of code community app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coder-sumit/codecommunity_back.git"
+  },
+  "keywords": [
+    "code",
+    "community",
+    "talk"
+  ],
+  "author": "coder sumit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coder-sumit/codecommunity_back/issues"
+  },
+  "homepage": "https://github.com/coder-sumit/codecommunity_back#readme"
+}
