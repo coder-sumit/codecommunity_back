@@ -23,9 +23,11 @@
   },
   "homepage": "https://github.com/coder-sumit/codecommunity_back#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mongodb": "^5.2.0",
+    "joi": "^17.9.1",
+    "mongoose": "^7.0.3",
     "nodemon": "^2.0.22"
   }
 }
