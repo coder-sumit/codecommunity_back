@@ -1,4 +1,3 @@
-const { string } = require('joi');
 const mongoose = require('mongoose');
 
 const ccUserSchema = new mongoose.Schema({
@@ -6,15 +5,25 @@ const ccUserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  mobile: {
+  username: {
     type: String,
     required: true,
     unique: true
   },
-  gender: {
+  github_url: {
     type: String,
-    enum: ['M', 'F', 'O'],
-    required: true
+    unique: true
+  },
+  insta_id: {
+    type: String,
+    unique: true
+  },
+  gmail: {
+    type: String,
+    unique: true
+  },
+  profile_pic: {
+    type: String
   },
   password: {
     type: String,
@@ -24,14 +33,31 @@ const ccUserSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  username: {
+  mobile: {
     type: String,
     required: true,
     unique: true
   },
-  c_kldge: {
+  code_kldge: {
     type: String
+  },
+  gender: {
+    type: String,
+    enum: ['M', 'F', 'O'],
+    required: true
+  },
+  user_status: {
+    type: String,
+    enum: ['baned', 'active'],
+    default: 'baned'
+  },
+  user_role: {
+    type: String,
+    enum: ['admin', 'sub_admin', 'user'],
+    default: 'user'
   }
+},{
+  timestamps: true
 });
 
 const CCUser = mongoose.model('cc_user', ccUserSchema);

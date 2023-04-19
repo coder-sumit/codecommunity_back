@@ -3,12 +3,7 @@ const { DB_USER, DB_PASS } = require("./index");
 const url = `mongodb+srv://${DB_USER}:${DB_PASS}@codecommunity.trkuryg.mongodb.net/?retryWrites=true&w=majority`;
 
 
-mongoose.connect(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-});
+mongoose.connect(url);
 
 const db = mongoose.connection;
 
