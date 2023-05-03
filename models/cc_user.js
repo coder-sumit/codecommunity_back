@@ -11,16 +11,13 @@ const ccUserSchema = new mongoose.Schema({
     unique: true
   },
   github_url: {
-    type: String,
-    unique: true
+    type: String
   },
   insta_id: {
-    type: String,
-    unique: true
+    type: String
   },
   gmail: {
-    type: String,
-    unique: true
+    type: String
   },
   profile_pic: {
     type: String
@@ -30,12 +27,10 @@ const ccUserSchema = new mongoose.Schema({
     required: true
   },
   dob: {
-    type: Date,
-    required: true
+    type: String
   },
   mobile: {
     type: String,
-    required: true,
     unique: true
   },
   code_kldge: {
@@ -43,13 +38,12 @@ const ccUserSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ['M', 'F', 'O'],
-    required: true
+    enum: ['M', 'F', 'O']
   },
   user_status: {
     type: String,
     enum: ['baned', 'active'],
-    default: 'baned'
+    default: 'active'
   },
   user_role: {
     type: String,

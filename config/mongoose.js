@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { DB_USER, DB_PASS } = require("./index");
-const url = `mongodb+srv://${DB_USER}:${DB_PASS}@codecommunity.trkuryg.mongodb.net/?retryWrites=true&w=majority`;
+const url = `mongodb+srv://${DB_USER}:${DB_PASS}@codecommunity.trkuryg.mongodb.net/codecommunity_dev?retryWrites=true&w=majority`;
 
 
 mongoose.connect(url);

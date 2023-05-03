@@ -1,5 +1,6 @@
 const {DEBUG_MODE} = require("../config");
 const {ValidationError} = require("joi");
+const CustomErrorHandler = require("../services/CustomErrorHandler");
 const errorHandler = (err, req, res, next)=>{
    let statusCode = 500;
    let data = {
@@ -12,6 +13,12 @@ const errorHandler = (err, req, res, next)=>{
     data = {
         message: err.message
     }
+   }
+   if(err instanceof CustomErrorHandler){
+      statusCode = 409;
+      data = {
+        message: err.message
+      }
    }
    data.success = false;
    return res.status(statusCode).json(data);
