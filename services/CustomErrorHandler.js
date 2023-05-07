@@ -11,6 +11,10 @@ class CustomErrorHandler{
     static wrongCredentials(message= "Username or Password is Wrong"){
         return new CustomErrorHandler(401, message);
     }
+
+    static unAuthorized(message = "unAuthorized"){
+        return new CustomErrorHandler(401, message);
+    }
 }
 
 module.exports = CustomErrorHandler;

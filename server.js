@@ -10,6 +10,9 @@ app.use(cors())
 
 app.use("/api", require("./routes"));
 
+app.use("/uploads", express.static(__dirname + "/uploads"));
+
+
 
 
 app.use(errorHandler);
