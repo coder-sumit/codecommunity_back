@@ -15,6 +15,10 @@ class CustomErrorHandler{
     static unAuthorized(message = "unAuthorized"){
         return new CustomErrorHandler(401, message);
     }
+
+    static invalidInput(message = "invalid input"){
+        return new CustomErrorHandler(403, message);
+    }
 }
 
 module.exports = CustomErrorHandler;

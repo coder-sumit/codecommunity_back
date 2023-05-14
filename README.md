@@ -63,4 +63,4 @@ To install CodeCommunity, follow these steps:
    npm start
    ```
 
-6. Open your browser and navigate to http://localhost:4500
+6. Create uploads and images folder at root level
