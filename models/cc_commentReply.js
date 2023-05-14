@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ccCommentReplySchema = new mongoose.Schema({
+const Schema = new mongoose.Schema({
     text: {
         type: String,
         required: true
@@ -22,5 +22,5 @@ const ccCommentReplySchema = new mongoose.Schema({
     timestamps: true
 });
 
-const CCCommentReply = mongoose.model('cc_comment_reply', ccCommentReplySchemaSchema);
+const CCCommentReply = mongoose.model('cc_comment_reply', Schema);
 module.exports = CCCommentReply;
