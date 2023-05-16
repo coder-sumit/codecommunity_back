@@ -51,6 +51,6 @@ const editComment = async (req, res, next)=>{
     }catch(err){
         return next(err);
     }
-    }
+}
 
 module.exports = {makeComment, editComment};

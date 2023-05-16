@@ -1,69 +1,68 @@
-const ForumQ = require("../models/cc_forumQ");
+const ForumA = require("../models/cc_forumA");
 const CustomErrorHandler = require("../services/CustomErrorHandler");
 const fs = require("fs");
 
-const postForumQ = async(req, res, next)=>{
+const postForumA = async(req, res, next)=>{
    try{
      let user = req.user._id;
       let data = JSON.parse(req.body.data);
       let filename = req.file?.filename;
+      console.log(filename);
 
       if(filename){
-         data.q_image = `images/${filename}`;
+         data.a_image = `images/${filename}`;
       }
-      data.q_user_id = user;
+      data.a_user_id = user;
   
-      if(!(data.q_caption || data.filename || data.q_code)){
-         fs.unlink(data.q_image);
+      if(!(data.a_caption || data.filename || data.a_code)){
+         fs.unlink(data.a_image);
          return next(CustomErrorHandler.invalidInput());
       }
 
-      let resQ = await ForumQ.create(data);
+      let resA = await ForumA.create(data);
 
       return res.status(200).json({
          success: true,
-         message: "question created successfully",
-         forumQ: resQ
+         message: "answer created successfully",
+         forumA: resA
        });
    }catch(err){
       return next(err);
    }
 }
 
-const editForumQ = async(req, res, next)=>{
+const editForumA = async(req, res, next)=>{
   try{
    let data = JSON.parse(req.body.data);
    let filename = req.file?.filename;
    let user = req.user._id;
 
    // get post 
-   let q = await ForumQ.findById(data.q_id);
-   if(!q){
+   let a = await ForumA.findById(data.a_id);
+   if(!a){
        return next(CustomErrorHandler.invalidInput());
    }
-   if(q.q_user_id != user){
+   if(a.a_user_id != user){
       return next(CustomErrorHandler.unAuthorized());
    }
    // if filename then remove prev image
-   if(filename && q.q_image){
-      fs.unlinkSync(q.q_image);
-      data.q_image = `images/${filename}`;
+   if(filename && a.a_image){
+      fs.unlinkSync(a.a_image);
+      data.a_image = `images/${filename}`;
     }else if(filename){
-      data.q_image = `images/${filename}`;
+      data.a_image = `images/${filename}`;
    }
 
-   // update q 
-   await ForumQ.findByIdAndUpdate(data.q_id, data);
+   // update a 
+   await ForumA.findByIdAndUpdate(data.a_id, data);
 
    return res.status(200).json({
       success: true,
-      message: "Quesion Edited Successfully"
+      message: "Answer Edited Successfully"
     });
 
   }catch(err){
     return next(err);
   }
 }
-
-
-module.exports = {postForumQ, editForumQ};
+module.exports = {postForumA, editForumA};
