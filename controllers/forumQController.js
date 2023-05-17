@@ -1,4 +1,6 @@
 const ForumQ = require("../models/cc_forumQ");
+const ForumA = require("../models/cc_forumA");
+const Like = require("../models/cc_like");
 const CustomErrorHandler = require("../services/CustomErrorHandler");
 const fs = require("fs");
 
@@ -65,5 +67,52 @@ const editForumQ = async(req, res, next)=>{
   }
 }
 
+const deleteForumQ = async(req, res, next)=>{
+   try{
+        let forum_q_id = req.params.id;
+        let user_id = req.user._id;
+         
+        // find forum q
+        let forum_q = await ForumQ.findById(forum_q_id);
 
-module.exports = {postForumQ, editForumQ};
+        if(!forum_q){
+            return next(CustomErrorHandler.invalidInput());
+        }
+
+        if(forum_q.q_user_id != user_id){
+          return next(CustomErrorHandler.unAuthorized());
+        }
+
+        // find all forum a for forum q
+        
+        let forum_as = await ForumA.find({forum_q: forum_q_id});
+
+        // delete all likes and images associated with forum_as
+        await Promise.all(
+         forum_as.map(async(forum_a)=>{
+           await Like.deleteMany({like_target_type: "forum_a", like_target_id: forum_a._id});
+           if(forum_a.a_image){
+            fs.unlinkSync(forum_a.a_image);
+           }
+           await ForumA.findByIdAndDelete(forum_a._id);
+         })
+       )
+
+       // delete all likes and image associated with forum_q
+       await Like.deleteMany({like_target_type: "forum_q", like_target_id: forum_q._id});
+       if(forum_q.q_image){
+         fs.unlinkSync(forum_q.q_image);
+        }
+       await ForumQ.findByIdAndDelete(forum_q._id);
+
+       return res.status(200).json({
+         success: true,
+         message: "forum_q deleted!"
+       });
+   }catch(err){
+      return next(err);
+   }
+}
+
+
+module.exports = {postForumQ, editForumQ, deleteForumQ};

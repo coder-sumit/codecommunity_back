@@ -19,6 +19,10 @@ const ccForumSchema = new mongoose.Schema({
     type: String,
     enum: ['public', 'private', 'draft', 'deleted', 'blocked'],
     default: 'public'
+  },
+  forum_q: {
+   type:  mongoose.Schema.Types.ObjectId,
+   ref: 'cc_forum_q'
   }
 }, {
     timestamps: true

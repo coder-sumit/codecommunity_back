@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middlewares/auth");
 const multer = require("multer");
-const {postForumA, editForumA} = require("../controllers/forumAController");
+const {postForumA, editForumA, deleteForumA} = require("../controllers/forumAController");
 
 //Configuration for Multer
 const multerStorage = multer.diskStorage({
@@ -35,6 +35,7 @@ const upload = multer({
 
 router.post("/postForumA", auth, upload.single('img'), postForumA);
 router.put("/editForumA", auth, upload.single('img'), editForumA);
+router.delete("/deleteForumA/:id", auth, deleteForumA);
 
 
 module.exports = router;
