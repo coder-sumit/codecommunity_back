@@ -9,11 +9,11 @@ const Schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'cc_post'
     },
-    user_id: {
+    comment_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'cc_user'
+        ref: 'cc_comment'
     },
-    target_user_id: {
+    user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'cc_user'
     }

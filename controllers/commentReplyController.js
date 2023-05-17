@@ -7,7 +7,7 @@ try{
     let data = req.body;
     let user = req.user._id;
 
-    if(!(data.post_id && data.target_user_id)){
+    if(!(data.post_id && data.comment_id)){
         return next(CustomErrorHandler.invalidInput());
     }
 
