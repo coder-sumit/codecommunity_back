@@ -1,4 +1,5 @@
 const CCCommentReply = require("../models/cc_commentReply");
+const Like = require("../models/cc_like");
 const CustomErrorHandler = require("../services/CustomErrorHandler");
 
 
@@ -52,6 +53,39 @@ const editCommentReply = async (req, res, next)=>{
     }catch(err){
         return next(err);
     }
-    }
+}
 
-module.exports = {makeCommentReply, editCommentReply};
+const deleteCommentReply = async (req, res, next)=>{
+try{
+    let comment_reply_id = req.params.id;
+    let user_id = req.user._id;
+ 
+    if(!comment_reply_id){
+     return next(CustomErrorHandler.invalidInput());
+    }
+    // find comment reply
+    let comment_reply = await CCCommentReply.findById(comment_reply_id);
+
+    if(!comment_reply){
+        return next(CustomErrorHandler.invalidInput());
+    }
+ 
+    if(comment_reply.user_id != user_id){
+     return next(CustomErrorHandler.invalidInput());
+    }
+ 
+    // delete comment_reply and associated likes
+    await Like.deleteMany({like_target_type: "comment_reply", like_target_id: comment_reply_id});
+    await CCCommentReply.findByIdAndDelete(comment_reply_id);
+
+    return res.status(200).json({
+        success: true,
+        message: "comment reply deleted!"
+    })
+}catch(err){
+    return next(err);
+}
+
+}
+
+module.exports = {makeCommentReply, editCommentReply, deleteCommentReply};

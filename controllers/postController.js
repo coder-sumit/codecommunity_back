@@ -77,6 +77,9 @@ const deletePost = async(req, res, next)=>{
   
   // find the post
   let post = await CCPost.findById(post_id);
+  if(!post){
+    return next(CustomErrorHandler.invalidInput());
+  }
 
   // check user autherization
   if(user_id != post.user_id){

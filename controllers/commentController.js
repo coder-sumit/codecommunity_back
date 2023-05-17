@@ -66,6 +66,9 @@ const deleteComment = async(req, res, next)=>{
 
     // find the comment
     let comment = await CCComment.findById(comment_id);
+    if(!comment){
+        return next(CustomErrorHandler.invalidInput());
+    }
 
     if(comment.user_id != user_id){
         return next(CustomErrorHandler.unAuthorized());
