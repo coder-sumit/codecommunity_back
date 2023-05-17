@@ -110,6 +110,11 @@ const deletePost = async(req, res, next)=>{
   // delete all likes associated with post
   await Like.deleteMany({like_target_type: "post", like_target_id: post_id});
   // delete post
+
+  // remove image 
+  if(post.post_image){
+    fs.unlinkSync(post.post_image);
+  }
   await CCPost.findByIdAndDelete(post_id);
 
   return res.status(200).json({
