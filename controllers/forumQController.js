@@ -3,6 +3,7 @@ const ForumA = require("../models/cc_forumA");
 const Like = require("../models/cc_like");
 const CustomErrorHandler = require("../services/CustomErrorHandler");
 const fs = require("fs");
+const TimeBeforeCreated = require("../lib/getTimeBeforeCreated");
 
 const postForumQ = async(req, res, next)=>{
    try{
@@ -114,5 +115,82 @@ const deleteForumQ = async(req, res, next)=>{
    }
 }
 
+const getForumQs = async(req, res,next) =>{
+  try{
+    const { page, limit } = req.query;
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
 
-module.exports = {postForumQ, editForumQ, deleteForumQ};
+    let quesions = await ForumQ.find({q_status: "public"}).populate("q_user_id").sort({"createdAt": "desc"}).skip((pageNumber-1)*limitNumber).limit(limitNumber);
+
+    let resQuestions = [];
+    
+    for(let quesion of quesions){
+      let created_at = new Date(quesion.createdAt);
+      let doc = {
+        forum_q_id: quesion._id,
+        username: quesion.q_user_id.username,
+        avatar: quesion.q_user_id.profile_pic,
+        caption: quesion.q_caption,
+        code: quesion.q_code,
+        image: quesion.q_image,
+        timeBeforeCreated: TimeBeforeCreated(created_at)
+      }
+      let likes = await Like.find({like_target_type: "forum_q", like_target_id: quesion._id}).populate("like_user_id");
+      likes = likes.map((like)=>{
+        return {
+          username: like.like_user_id.username,
+          avatar: like.like_user_id.profile_pic
+        }
+      });
+      doc.likeCount = likes.length;
+      doc.likes = likes;
+
+      // find ans for that question
+      let answers = await ForumA.find({a_status: "public"}).populate("a_user_id").sort({"createdAt": "desc"});
+
+      let resAns = [];
+      
+      for(let ans of answers){
+        let created_at = new Date(ans.createdAt);
+        let ansDoc = {
+          forum_a_id: ans._id,
+          caption: ans.a_caption,
+          code: ans.a_code,
+          image: ans.a_image,
+          username: ans.a_user_id.username,
+          avatar: ans.a_user_id.profile_pic
+        }
+        let likes = await Like.find({like_target_type: "forum_a", like_target_id: ans._id}).populate("like_user_id");
+        likes = likes.map((like)=>{
+        return {
+          username: like.like_user_id.username,
+          avatar: like.like_user_id.profile_pic
+        }
+      });
+      ansDoc.likeCount = likes.length;
+      ansDoc.likes = likes;
+      resAns.push(ansDoc);
+      }
+      answers = resAns;
+
+      doc.forum_as = answers;
+
+      resQuestions.push(doc);
+    }
+
+    quesions = resQuestions;
+
+    return res.status(200).json({
+      success: true,
+      message: "forum_q fetched",
+      forumqs: quesions
+    })
+
+  }catch(err){
+      return next(err);
+  }
+}
+
+
+module.exports = {postForumQ, editForumQ, deleteForumQ, getForumQs};

@@ -13,9 +13,6 @@ app.use("/api", require("./routes"));
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use("/images", express.static(__dirname + "/images"));
 
-
-
-
 app.use(errorHandler);
 
 app.listen(APP_PORT, (err)=> {
