@@ -7,7 +7,7 @@ const ccLikeSchema = new mongoose.Schema({
     required: true
   },
   like_target_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   },
   like_user_id: {

@@ -4,6 +4,7 @@ const CCCommentReply = require("../models/cc_commentReply");
 const Like = require("../models/cc_like");
 const CustomErrorHandler = require("../services/CustomErrorHandler");
 const fs = require("fs");
+const TimeBeforeCreated = require("../lib/getTimeBeforeCreated");
 const post = async (req, res, next)=>{
   try{
    let data = JSON.parse(req.body.data);
@@ -126,4 +127,89 @@ const deletePost = async(req, res, next)=>{
  }
 }
 
-module.exports = {post, editPost, deletePost};
+const getPosts = async(req, res, next)=>{
+  try{
+    const { page, limit } = req.query;
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+
+    let posts = await CCPost.find({post_status: "public", abusive_status: false}).populate("user_id").sort({"createdAt": "desc"}).skip((pageNumber-1)*limitNumber).limit(limitNumber);
+
+    let resPosts = [];
+
+    for(let post of posts){
+      let created_at = new Date(post.createdAt);
+      let doc = {
+        post_id: post._id,
+        username: post.user_id.username,
+        avatar: post.user_id.profile_pic,
+        post_caption: post.post_caption,
+        post_code: post.post_code,
+        post_image: post.post_image,
+        timeBeforeCreated: TimeBeforeCreated(created_at)
+      }
+      // find likes and likeCount
+      let likes = await Like.find({like_target_type: "post", like_target_id: post._id}).populate("like_user_id");
+      likes = likes.map((like)=>{
+        return {
+          username: like.like_user_id.username,
+          avatar: like.like_user_id.profile_pic
+        }
+      })
+      doc.likeCount = likes.length;
+      doc.likes = likes;
+ 
+      // find comments and comment Counts
+      let comments = await CCComment.find({post_id: post._id}).sort({"createdAt": "desc"}).populate("user_id");
+
+      let resComments = [];
+
+      for(let comment of comments){
+         let created_at = new Date(comment.createdAt);
+         let comDoc = {
+           comment_id: comment._id,
+           username: comment.user_id.username,
+           avatar: comment.user_id.profile_pic,
+           text: comment.text,
+           timeBeforeCreated: TimeBeforeCreated(created_at)
+         }
+          
+         let commentReplies = await CCCommentReply.find({comment_id: comment._id}).sort({"createdAt": "desc"}).populate("user_id");
+
+         commentReplies = commentReplies.map((comment_reply)=>{
+            let created_at = new Date(comment_reply.createdAt);
+            return {
+                comment_reply_id: comment_reply.id,
+                username: comment_reply.user_id.username,
+                avatar: comment_reply.user_id.profile_pic,
+                text: comment_reply.text,
+                timeBeforeCreated: TimeBeforeCreated(created_at)
+            }
+         });
+         comDoc.commentReplyCount = commentReplies.length;
+         comDoc.commentReplies = commentReplies;
+
+         resComments.push(comDoc);
+      }
+      doc.commentCount = resComments.length;
+      doc.comments = resComments;
+
+      resPosts.push(doc);
+    }
+
+    posts = resPosts;
+
+  
+
+    return res.status(200).json({
+      success: true,
+      message: "posts here!",
+      data: posts
+    });
+
+  }catch(err){
+    return next(err);
+  }
+}
+
+module.exports = {post, editPost, deletePost, getPosts};
