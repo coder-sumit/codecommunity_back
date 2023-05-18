@@ -4,7 +4,7 @@ const auth = require("../middlewares/auth");
 const sameAuth = require("../middlewares/sameUserAuth");
 const multer = require("multer");
 
-const {post, editPost, deletePost, getPosts} = require("../controllers/postController"); 
+const {post, editPost, deletePost, getPosts, getUserPosts} = require("../controllers/postController"); 
 
 
 //Configuration for Multer
@@ -39,6 +39,7 @@ router.post("/post", auth, upload.single('img'), post);
 router.put("/editPost", auth, upload.single('img'), editPost);
 router.delete("/deletePost/:id", auth, deletePost);
 router.get("/getPosts", auth, getPosts);
+router.get("/getUserPosts/:id", auth, getUserPosts);
 
 
 module.exports = router;
