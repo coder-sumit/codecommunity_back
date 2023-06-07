@@ -47,8 +47,10 @@ try{
   return res.status(200).json({
     success: true,
     message: "registration successful",
-    data,
-    token,
+    data: {
+      data,
+      token,
+    }
   });
 
 }catch(err){
@@ -86,7 +88,9 @@ const loginUser = async (req, res, next)=> {
     return res.status(200).json({
       success: true,
       message: "login successful",
-      token,
+      data: {
+        token,
+      }
     });              
   }catch(err){
      return next(err);
